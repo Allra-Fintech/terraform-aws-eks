@@ -25,7 +25,8 @@ locals {
   create_outposts_local_cluster    = length(var.outpost_config) > 0
   enable_cluster_encryption_config = length(var.cluster_encryption_config) > 0 && !local.create_outposts_local_cluster
 
-  auto_mode_enabled = try(var.cluster_compute_config.enabled, false)
+  auto_mode_configured = length(var.cluster_compute_config)
+  auto_mode_enabled    = try(var.cluster_compute_config.enabled, false)
 }
 
 ################################################################################
@@ -54,7 +55,7 @@ resource "aws_eks_cluster" "this" {
   }
 
   dynamic "compute_config" {
-    for_each = length(var.cluster_compute_config) > 0 ? [var.cluster_compute_config] : []
+    for_each = auto_mode_configured > 0 ? [var.cluster_compute_config] : []
 
     content {
       enabled       = local.auto_mode_enabled
@@ -135,7 +136,7 @@ resource "aws_eks_cluster" "this" {
   }
 
   dynamic "storage_config" {
-    for_each = length(var.cluster_compute_config) ? [1] : []
+    for_each = auto_mode_configured ? [1] : []
 
     content {
       block_storage {
