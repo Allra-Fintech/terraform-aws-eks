@@ -136,7 +136,7 @@ resource "aws_eks_cluster" "this" {
   }
 
   dynamic "storage_config" {
-    for_each = local.auto_mode_configured ? [1] : []
+    for_each = local.auto_mode_configured > 0 ? [1] : []
 
     content {
       block_storage {
