@@ -55,7 +55,7 @@ resource "aws_eks_cluster" "this" {
   }
 
   dynamic "compute_config" {
-    for_each = auto_mode_configured > 0 ? [var.cluster_compute_config] : []
+    for_each = local.auto_mode_configured > 0 ? [var.cluster_compute_config] : []
 
     content {
       enabled       = local.auto_mode_enabled
@@ -136,7 +136,7 @@ resource "aws_eks_cluster" "this" {
   }
 
   dynamic "storage_config" {
-    for_each = auto_mode_configured ? [1] : []
+    for_each = local.auto_mode_configured ? [1] : []
 
     content {
       block_storage {
